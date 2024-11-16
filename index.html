@@ -1,0 +1,684 @@
+<html><head><base href="https://radio-streaming-app.example.com">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio Streaming App</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #89C4C0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+  }
+  .container {
+    background-color: #E6DBAD;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    border: 8px solid #9E859E;
+  }
+  #controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  #play-pause {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #cfb98c, #a89873);
+    box-shadow: 4px 4px 8px #9e8e65,
+                -4px -4px 8px #d1c09b;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  #play-pause:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: all 0.5s;
+  }
+  #play-pause:hover:before {
+    left: 100%;
+  }
+  #play-pause:active {
+    box-shadow: inset 3px 3px 6px #9e8e65,
+                inset -3px -3px 6px #d1c09b;
+  }
+  #volume-container {
+    position: relative;
+    width: 200px;
+    height: 30px;
+  }
+  #volume {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #9e8e65;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+  }
+  #volume:hover {
+    opacity: 1;
+  }
+  #volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #857755;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  }
+  #volume::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #857755;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  }
+  #volume-icon {
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #857755;
+  }
+  .logo-container {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    margin: 0 auto 20px;
+  }
+  .logo {
+    width: 230px;
+    height: 230px;
+    background-image: url('https://i.postimg.cc/7hfc0Wq8/oie-25449-Xc-Sbga-Xk.jpg');
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.5s ease-in-out;
+    border-radius: 50%;
+    overflow: hidden;
+    opacity: 1;
+    z-index: 1;
+  }
+  .cover-art {
+    width: 230px;
+    height: 230px;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 2;
+  }
+  .logo-border {
+    width: 230px;
+    height: 230px;
+    border: 8px solid #9E859E;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    box-sizing: content-box;
+    border-radius: 50%;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .social-buttons-container {
+    border: 3px solid #9E859E;
+    border-radius: 15px;
+    padding: 10px;
+    margin-top: 20px;
+  }
+  .social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  .social-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  .social-button:hover {
+    transform: scale(1.1);
+  }
+  .social-button-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+  }
+  .social-button:hover .social-button-icon {
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  .facebook-button .social-button-icon {
+    background-color: #3b5998;
+  }
+  .instagram-button .social-button-icon {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  }
+  .whatsapp-button .social-button-icon {
+    background-color: #25D366;
+  }
+  .chat-button .social-button-icon {
+    background-color: #007bff;
+  }
+  .video-button .social-button-icon {
+    background-color: #FF0000;
+  }
+  .social-button-text {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  #chat-window {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    height: 80%;
+    max-height: 600px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    overflow: hidden;
+    border: 8px solid #9E859E;
+  }
+  #chat-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  #back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #9e8e65;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1001;
+  }
+  #back-button:hover {
+    background-color: #857755;
+    transform: scale(1.1);
+  }
+  #video-window {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 852px;
+    height: 480px;
+    background-color: black;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    overflow: hidden;
+    border: 8px solid #9E859E;
+  }
+  #close-video-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #9e8e65;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1001;
+    cursor: pointer;
+  }
+  #close-video-button:hover {
+    background-color: #857755;
+    transform: scale(1.1);
+  }
+  #video-player {
+    width: 100%;
+    height: 100%;
+  }
+  .video-button.live .social-button-icon {
+    position: relative;
+  }
+  .video-button.live .social-button-icon::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .video-button.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  }
+  /* Add to existing <style> section */
+  #metadata-container {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: rgba(158, 133, 158, 0.1);
+    border-radius: 8px;
+    border: 2px solid #9E859E;
+  }
+
+  .now-playing {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .song-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  .artist-name {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0 0 0;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <div class="logo-border"></div>
+      <div id="logo" class="logo"></div>
+      <div id="cover-art" class="cover-art"></div>
+    </div>
+    <div id="player">
+      <audio id="audio-player" src=""></audio>
+    </div>
+    <div id="controls">
+      <button id="play-pause"><i class="fas fa-pause"></i></button>
+      <div id="volume-container">
+        <i id="volume-icon" class="fas fa-volume-up"></i>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+      </div>
+    </div>
+    <div id="metadata-container">
+      <div class="now-playing">Reproduciendo ahora:</div>
+      <p class="song-title">Cargando...</p>
+      <p class="artist-name"></p>
+    </div>
+    <div class="social-buttons-container">
+      <div class="social-buttons">
+        <a href="https://facebook.com" target="_blank" class="social-button facebook-button">
+          <div class="social-button-icon">
+            <i class="fab fa-facebook-f"></i>
+          </div>
+          <span class="social-button-text">Facebook</span>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="social-button instagram-button">
+          <div class="social-button-icon">
+            <i class="fab fa-instagram"></i>
+          </div>
+          <span class="social-button-text">Instagram</span>
+        </a>
+        <a href="https://wa.me/573102000088" target="_blank" class="social-button whatsapp-button">
+          <div class="social-button-icon">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <span class="social-button-text">WhatsApp</span>
+        </a>
+        <button class="social-button chat-button" id="chat-button">
+          <div class="social-button-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <span class="social-button-text">Chat</span>
+        </button>
+        <button class="social-button video-button" id="video-button">
+          <div class="social-button-icon">
+            <i class="fas fa-video"></i>
+          </div>
+          <span class="social-button-text">En Vivo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chat-window">
+    <a href="https://radio-streaming-app.example.com" id="back-button">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <iframe id="chat-frame" src="https://www3.cbox.ws/box/?boxid=3538500&boxtag=zZH7x2"></iframe>
+  </div>
+
+  <div id="video-window">
+    <button id="close-video-button">
+      <i class="fas fa-times"></i>
+    </button>
+    <video id="video-player" controls></video>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+  <script>
+    let sound = null;
+
+    const metadataContainer = document.getElementById('metadata-container');
+    const songTitle = document.querySelector('.song-title');
+    const artistName = document.querySelector('.artist-name');
+
+    const playPauseBtn = document.getElementById('play-pause');
+    const volumeSlider = document.getElementById('volume');
+    const volumeIcon = document.getElementById('volume-icon');
+    const logo = document.getElementById('logo');
+    const logoBorder = document.querySelector('.logo-border');
+    const chatButton = document.getElementById('chat-button');
+    const chatWindow = document.getElementById('chat-window');
+    const backButton = document.getElementById('back-button');
+    const videoButton = document.getElementById('video-button');
+    const videoWindow = document.getElementById('video-window');
+    const closeVideoButton = document.getElementById('close-video-button');
+    const videoPlayer = document.getElementById('video-player');
+    const videoSource = 'https://fl1002.bozztv.com/ssh101/lotostereotv/index.m3u8';
+    const coverArt = document.getElementById('cover-art');
+    let showingCoverArt = false;
+
+    const streamUrl = 'https://accesopanel.radiograciadivina.com/8286/stream';
+    let isLive = false;
+    let isPlaying = false;
+
+    function initializeAudio() {
+      sound = new Howl({
+        src: [streamUrl],
+        html5: true,
+        volume: volumeSlider.value,
+        format: ['mp3', 'aac'],
+        autoplay: true,
+        onplay: function() {
+          startLogoAnimation();
+          updatePlayPauseButton();
+        }
+      });
+    }
+
+    function updatePlayPauseButton() {
+      playPauseBtn.innerHTML = sound && sound.playing() ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    }
+
+    function startLogoAnimation() {
+      logo.style.animation = 'pulse 2s infinite';
+      logoBorder.style.animation = 'pulse 2s infinite';
+    }
+
+    function stopLogoAnimation() {
+      logo.style.animation = 'none';
+      logoBorder.style.animation = 'none';
+    }
+
+    function updateVolumeIcon(value) {
+      if (value === 0) {
+        volumeIcon.className = 'fas fa-volume-mute';
+      } else if (value < 0.5) {
+        volumeIcon.className = 'fas fa-volume-down';
+      } else {
+        volumeIcon.className = 'fas fa-volume-up';
+      }
+    }
+
+    function toggleLogoAndCoverArt() {
+      if (showingCoverArt) {
+        // Switch to logo
+        coverArt.style.opacity = '0';
+        setTimeout(() => {
+          logo.style.opacity = '1';
+        }, 500);
+      } else {
+        // Switch to cover art if available
+        if (coverArt.style.backgroundImage) {
+          logo.style.opacity = '0';
+          setTimeout(() => {
+            coverArt.style.opacity = '1';
+          }, 500);
+        }
+      }
+      showingCoverArt = !showingCoverArt;
+
+      // Schedule next toggle in 30 seconds
+      setTimeout(toggleLogoAndCoverArt, 30000);
+    }
+
+    function updateMetadataAndCoverArt() {
+      fetch('https://accesopanel.radiograciadivina.com/cp/get_info.php?p=8286')
+        .then(response => response.json())
+        .then(data => {
+          if (data.title) {
+            const parts = data.title.split(' - ');
+            if (parts.length > 1) {
+              songTitle.textContent = parts[1];
+              artistName.textContent = parts[0];
+              
+              // Search iTunes API for cover art
+              fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(parts[0] + ' ' + parts[1])}&entity=song&limit=1`)
+                .then(res => res.json())
+                .then(itunesData => {
+                  if (itunesData.results && itunesData.results.length > 0) {
+                    const coverUrl = itunesData.results[0].artworkUrl100.replace('100x100', '600x600');
+                    if (coverUrl) {
+                      coverArt.style.backgroundImage = `url('${coverUrl}')`;
+                      // Reset toggle state when new cover art loads
+                      showingCoverArt = false;
+                      logo.style.opacity = '1';
+                      coverArt.style.opacity = '0';
+                    }
+                  }
+                })
+                .catch(() => {
+                  coverArt.style.backgroundImage = '';
+                });
+            } else {
+              songTitle.textContent = data.title;
+              artistName.textContent = '';
+            }
+          } else {
+            songTitle.textContent = 'Radio Gracia Divina';
+            artistName.textContent = '';
+            coverArt.style.backgroundImage = '';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching metadata:', error);
+          songTitle.textContent = 'Radio Gracia Divina';
+          artistName.textContent = '';
+          coverArt.style.backgroundImage = '';
+        });
+    }
+
+    function checkIfLive() {
+      fetch(videoSource)
+        .then(response => {
+          if (response.ok) {
+            isLive = true;
+            videoButton.classList.add('live');
+          } else {
+            isLive = false;
+            videoButton.classList.remove('live');
+          }
+        })
+        .catch(() => {
+          isLive = false;
+          videoButton.classList.remove('live');
+        });
+    }
+
+    playPauseBtn.addEventListener('click', () => {
+      if (!sound) {
+        initializeAudio();
+      }
+      
+      if (sound.playing()) {
+        sound.pause();
+        stopLogoAnimation();
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+      } else {
+        sound.play();
+        startLogoAnimation();
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      }
+    });
+
+    volumeSlider.addEventListener('input', () => {
+      const volumeValue = parseFloat(volumeSlider.value);
+      if (sound) {
+        sound.volume(volumeValue);
+      }
+      updateVolumeIcon(volumeValue);
+    });
+
+    chatButton.addEventListener('click', () => {
+      chatWindow.style.display = 'block';
+    });
+
+    backButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      chatWindow.style.display = 'none';
+    });
+
+    videoButton.addEventListener('click', () => {
+      if (isLive) {
+        videoWindow.style.display = 'block';
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(videoSource);
+          hls.attachMedia(videoPlayer);
+          hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            videoPlayer.play();
+            isPlaying = true;
+            videoButton.classList.add('active');
+          });
+        }
+        else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+          videoPlayer.src = videoSource;
+          videoPlayer.addEventListener('loadedmetadata', function() {
+            videoPlayer.play();
+            isPlaying = true;
+            videoButton.classList.add('active');
+          });
+        }
+      }
+    });
+
+    closeVideoButton.addEventListener('click', () => {
+      videoWindow.style.display = 'none';
+      videoPlayer.pause();
+      videoPlayer.currentTime = 0;
+      isPlaying = false;
+      videoButton.classList.remove('active');
+    });
+
+    // Initialize audio on page load
+    initializeAudio();
+    updateVolumeIcon(volumeSlider.value);
+    updatePlayPauseButton();
+    setTimeout(toggleLogoAndCoverArt, 30000); // Start the alternating cycle after 30 seconds
+    updateMetadataAndCoverArt();
+
+    setInterval(checkIfLive, 30000);
+    checkIfLive();
+
+    document.querySelectorAll('.social-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        if (!button.classList.contains('chat-button') && !button.classList.contains('video-button')) {
+          e.preventDefault();
+          window.open(button.href, '_blank');
+        }
+      });
+    });
+
+    window.addEventListener('beforeunload', (event) => {
+      if (sound && sound.playing()) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+  </script>
+</body>
+</html>
